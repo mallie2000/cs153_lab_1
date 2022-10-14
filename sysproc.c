@@ -16,14 +16,34 @@ sys_fork(void)
 int
 sys_exit(void)
 {
-  exit();
-  return 0;  // not reached
+    int status;
+    //if(argint(0,&status) < 0)
+    //    exit(0);
+    argint(0,&status);
+    exit(status);
+    return 0;  // not reached
 }
 
 int
 sys_wait(void)
 {
-  return wait();
+    char * temp = 0;
+    argptr(0, &temp, 4);
+        //wait(0);
+    int * status = (int*)temp;
+    //cprintf("Rats are eating my ravioli: %d\n", *temp);
+    return wait(status);
+}
+int sys_waitpid(void){
+    char * c = 0;
+    int pid = 0;
+    int option = 0;
+    argptr(1, &c, 4);
+    argint(0,&pid);
+    argint(2,&option);
+
+    int * status = (void*)c;
+    return waitpid(pid,status,option);
 }
 
 int
@@ -88,4 +108,8 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+int sys_hello(void){
+    hello();
+    return 0;
 }
